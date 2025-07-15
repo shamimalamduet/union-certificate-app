@@ -1,0 +1,1786 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইউনিয়ন পরিষদ প্রত্যয়নপত্র জেনারেটর</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS for Hind Siliguri font and other specific styles */
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+        /* Adding Kalpurush and SolaimanLipi for NID Change certificate as per user's request */
+        @import url('https://fonts.googleapis.com/css2?family=Kalpurush:wght@400&family=SolaimanLipi:wght@400&display=swap');
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6; /* Tailwind gray-100 */
+            color: #1a202c; /* Tailwind gray-900 */
+        }
+        .input-field {
+            font-family: 'Hind Siliguri', sans-serif;
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db; /* Tailwind gray-300 */
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            transition: all 0.2s ease-in-out;
+        }
+        .input-field:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* Tailwind ring-2 blue-500 */
+            border-color: transparent;
+        }
+        .btn-primary {
+            background-color: #2563eb; /* Tailwind blue-600 */
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; /* Tailwind rounded-lg */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Tailwind shadow-md */
+            transition: all 0.3s ease-in-out;
+            transform: scale(1);
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8; /* Tailwind blue-700 */
+            transform: scale(1.05);
+        }
+        .btn-secondary {
+            background-color: #d1d5db; /* Tailwind gray-300 */
+            color: #1f2937; /* Tailwind gray-800 */
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease-in-out;
+            transform: scale(1);
+        }
+        .btn-secondary:hover {
+            background-color: #9ca3af; /* Tailwind gray-400 */
+            transform: scale(1.05);
+        }
+        .btn-green {
+            background-color: #059669; /* Tailwind green-600 */
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease-in-out;
+            transform: scale(1);
+        }
+        .btn-green:hover {
+            background-color: #047857; /* Tailwind green-700 */
+            transform: scale(1.05);
+        }
+        .btn-red {
+            background-color: #dc2626; /* Tailwind red-600 */
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease-in-out;
+            transform: scale(1);
+        }
+        .btn-red:hover {
+            background-color: #b91c1c; /* Tailwind red-700 */
+            transform: scale(1.05);
+        }
+        .font-hind-siliguri {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        /* Styles for the printable preview area */
+        #printable-preview-area {
+            background-color: white; /* Ensure white background for the printable area */
+            position: relative; /* For absolute positioning of icons if needed later */
+            border: 1px dotted #a0aec0; /* Dotted border for print area */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Shadow for visual separation */
+            width: 210mm; /* A4 width */
+            min-height: 297mm; /* A4 height */
+            margin: 0 auto; /* Center the preview area */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="min-h-screen bg-gray-100 font-sans text-gray-900">
+        <header class="bg-blue-700 text-white p-6 shadow-lg">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-3xl font-bold font-hind-siliguri">ইউনিয়ন পরিষদ প্রত্যয়নপত্র জেনারেটর</h1>
+                <nav>
+                    <ul class="flex space-x-6">
+                        <li>
+                            <button id="nav-home" class="text-lg hover:text-blue-200 transition duration-200 font-hind-siliguri">
+                                হোম
+                            </button>
+                        </li>
+                        <li>
+                            <button id="nav-create" class="text-lg hover:text-blue-200 transition duration-200 font-hind-siliguri">
+                                নতুন প্রত্যয়নপত্র
+                            </button>
+                        </li>
+                        <li>
+                            <button id="nav-view" class="text-lg hover:text-blue-200 transition duration-200 font-hind-siliguri">
+                                সংরক্ষিত প্রত্যয়নপত্র
+                            </button>
+                        </li>
+                        <li>
+                            <button id="nav-settings" class="text-lg hover:text-blue-200 transition duration-200 font-hind-siliguri">
+                                সেটিংস
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main-content" class="container mx-auto p-8 py-12">
+            <!-- Content will be rendered here by JavaScript -->
+        </main>
+
+        <footer class="bg-gray-800 text-white p-6 text-center mt-12 shadow-inner">
+            <p class="font-hind-siliguri">&copy; <span id="current-year"></span> ইউনিয়ন পরিষদ প্রত্যয়নপত্র জেনারেটর। সর্বস্বত্ব সংরক্ষিত।</p>
+        </footer>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables for Firebase configuration (provided by Canvas environment)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Initialize Firebase App instances
+        let appInstance;
+        let dbInstance;
+        let authInstance;
+        let userId = null;
+        let loading = true; // Set to true initially for Firebase loading
+        let error = null;
+        let currentPage = 'home';
+        let selectedCertificateType = '';
+        let formData = {};
+        let certificates = []; // This will now hold the Firebase-synced certificates
+        let certificateLanguage = 'bn'; // 'bn' for Bengali, 'en' for English
+
+        const defaultFieldConfig = {
+            unmarried: ['name', 'fatherName', 'motherName', 'address', 'dob', 'nid', 'guardianName', 'guardianAddress'],
+            'non-voter': ['name', 'fatherName', 'motherName', 'address', 'dob', 'birthRegistrationNumber'],
+            'permanent-resident': ['name', 'fatherName', 'motherName', 'currentAddress', 'permanentAddress', 'nid'],
+            'nid-change': ['name', 'fatherName', 'motherName', 'oldNid'], // Fields based on user's snippet
+        };
+
+        const allPossibleFields = {
+            name: { bn: 'আবেদনকারীর নাম', en: 'Applicant Name', type: 'text' },
+            fatherName: { bn: 'পিতার নাম', en: 'Father\'s Name', type: 'text' },
+            motherName: { bn: 'মাতার নাম', en: 'Mother\'s Name', type: 'text' },
+            address: { bn: 'গ্রাম, ডাকঘর, উপজেলা, জেলা', en: 'Village, Post Office, Upazila, District', type: 'text' },
+            dob: { bn: 'জন্ম তারিখ', en: 'Date of Birth', type: 'date' },
+            nid: { bn: 'জাতীয় পরিচয়পত্র নম্বর (যদি থাকে)', en: 'National ID Number (if any)', type: 'text' },
+            oldNid: { bn: 'পুরাতন জাতীয় পরিচয়পত্র নম্বর', en: 'Old National ID Number', type: 'text' },
+            newNid: { bn: 'নতুন জাতীয় পরিচয়পত্র নম্বর', en: 'New National ID Number', type: 'text' },
+            guardianName: { bn: 'অভিভাবক/সাক্ষীর নাম', en: 'Guardian/Witness Name', type: 'text' },
+            guardianAddress: { bn: 'অভিভাবক/সাক্ষীর ঠিকানা', en: 'Guardian/Witness Address', type: 'text' },
+            currentAddress: { bn: 'বর্তমান ঠিকানা', en: 'Current Address', type: 'text' },
+            permanentAddress: { bn: 'স্থায়ী ঠিকানা', en: 'Permanent Address', type: 'text' },
+            reasonForChange: { bn: 'পরিবর্তনের কারণ', en: 'Reason for Change', type: 'textarea' },
+            birthRegistrationNumber: { bn: 'জন্মনিবন্ধন নাম্বার', en: 'Birth Registration Number', type: 'text' },
+        };
+
+        let appSettings = {
+            mainHeading: '৬নং রানীহাটি ইউনিয়ন পরিষদ কার্যালয়',
+            detailedAddress: 'ডাকঘরঃ রামচন্দ্রপুরহাট-৬৭০২, উপজেলাঃ চাঁপাইনবাবগঞ্জ সদর, জেলাঃ চাঁপাইনবাবগঞ্জ। E-mali : sample@gmail.com mobile: 0170000000',
+            designation: 'চেয়ারম্যান',
+            preparerDesignation: 'প্রস্তুত কারক',
+            identifierDesignation: 'শনাক্তকারী',
+            unionLogoUrl: '',
+            mujibLogoUrl: '',
+            mainHeadingEn: '6 No. Ranihati Union Parishad Office',
+            detailedAddressEn: 'Post Office: Ramchandrapurhat-6702, Upazila: Chapainawabganj Sadar, District: Chapainawabganj. E-mail : sample@gmail.com Mobile: 0170000000',
+            designationEn: 'Chairman',
+            preparerDesignationEn: 'Preparer',
+            identifierDesignationEn: 'Identifier',
+            headerBgColor: '#e6ffe6',
+            certificateFieldConfig: defaultFieldConfig,
+        };
+
+        // DOM Elements
+        const mainContentDiv = document.getElementById('main-content');
+        const certificateRef = { current: null }; // Will point to the editable body content div
+
+        // User's provided HTML template for NID Change Certificate
+        const userNidChangeTemplate = `
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>ছবি ও স্বাক্ষর পরিবর্তন প্রত্যয়ন</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 1in;
+    }
+
+    body {
+      font-family: Kalpurush, SolaimanLipi, Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    h2 {
+      text-align: center;
+      text-decoration: underline;
+      margin-top: 40px;
+    }
+
+    p {
+      text-align: justify;
+      margin: 20px 0;
+      padding: 0 50px;
+    }
+
+    table {
+      width: 90%;
+      border-collapse: collapse;
+      margin: 30px auto;
+    }
+
+    td {
+      border: 2px solid black;
+    }
+
+    .photo-cell {
+      width: 60%;
+      height: 300px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .signature-cell {
+      width: 40%;
+      height: 100px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .footer {
+      margin-top: 50px;
+      padding: 0 50px;
+    }
+
+    .right-align {
+      text-align: right;
+      margin-top: 50px;
+      padding-right: 50px;
+    }
+
+    @media print {
+      body {
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h2>ছবি ও স্বাক্ষর পরিবর্তন সংক্রান্ত প্রত্যয়নপত্র</h2>
+
+  <p>এহাতে প্রত্যয়ন করা যাইতেছে যে, <strong>জনাব/জনাবা [নাম]</strong>, পিতা: [পিতার নাম],  
+  মাতা: [মাতার নাম], জাতীয় পরিচয়পত্র নম্বর: [NID নম্বর] — তাহার জাতীয় পরিচয়পত্রে থাকা 
+  পুরাতন ছবি ও স্বাক্ষর পরিবর্তন করে নতুন ছবি ও নমুনা স্বাক্ষর গ্রহণ করিতে ইচ্ছুক।</p>
+
+  <p>তাহার অনুরোধক্রমে নিম্নের ছবি ও নমুনা স্বাক্ষর গ্রহণযোগ্য মর্মে এই প্রত্যয়ন প্রদান করা হইল।</p>
+
+  <table>
+    <tr>
+      <td class="photo-cell" rowspan="3">
+        <div class="label">ছবি</div>
+        <p>(প্রিন্ট করার পরে এখানে ছবি সংযুক্ত করুন)</p>
+      </td>
+      <td class="signature-cell">(১ম নমুনা স্বাক্ষর)</td>
+    </tr>
+    <tr>
+      <td class="signature-cell">(২য় নমুনা স্বাক্ষর)</td>
+    </tr>
+    <tr>
+      <td class="signature-cell">(৩য় নমুনা স্বাক্ষর)</td>
+    </tr>
+  </table>
+
+  <div class="footer">
+    <p>তারিখ: [তারিখ]</p>
+  </div>
+
+  <div class="right-align">
+    প্রত্যয়নকারী কর্মকর্তা<br>
+    নাম: [কর্মকর্তার নাম]<br>
+    পদবি: [কর্মকর্তার পদবি]<br>
+    দপ্তর: [কর্মকর্তার দপ্তর]<br>
+  </div>
+
+</body>
+</html>
+`;
+
+
+        // --- Utility Functions ---
+        function alertMessage(message) {
+            const alertBox = document.createElement('div');
+            alertBox.className = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-500 text-white p-4 rounded-lg shadow-lg z-50 font-hind-siliguri';
+            alertBox.textContent = message;
+            document.body.appendChild(alertBox);
+            setTimeout(() => {
+                document.body.removeChild(alertBox);
+            }, 3000);
+        }
+
+        // Custom confirmation dialog function
+        function showCustomConfirm(message) {
+            return new Promise((resolve) => {
+                const confirmBox = document.createElement('div');
+                confirmBox.className = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl z-50 font-hind-siliguri border border-gray-300';
+                confirmBox.innerHTML = `
+                    <p class="text-lg font-semibold mb-4">${message}</p>
+                    <div class="flex justify-end space-x-4">
+                        <button id="confirm-cancel" class="btn-secondary">না</button>
+                        <button id="confirm-ok" class="btn-red">হ্যাঁ</button>
+                    </div>
+                `;
+                document.body.appendChild(confirmBox);
+
+                document.getElementById('confirm-ok').addEventListener('click', () => {
+                    document.body.removeChild(confirmBox);
+                    resolve(true);
+                });
+                document.getElementById('confirm-cancel').addEventListener('click', () => {
+                    document.body.removeChild(confirmBox);
+                    resolve(false);
+                });
+            });
+        }
+
+        function getPlaceholder(field, lang) {
+            return allPossibleFields[field]?.[lang] || '';
+        }
+
+        // Helper function to get certificate-specific texts based on type and language
+        function getCertificateTexts(type, lang, data, forPrintOrPdf = false) {
+            const texts = {
+                unmarried: {
+                    bn: {
+                        title: 'অবিবাহিত প্রত্যয়নপত্র',
+                        body: `এই মর্মে প্রত্যয়ন করা যাইতেছে যে, ${data.name || '[আবেদনকারীর নাম]'}, পিতা: ${data.fatherName || '[পিতার নাম]'}, মাতা: ${data.motherName || '[মাতার নাম]'}, গ্রাম: ${data.address || '[গ্রাম, ডাকঘর, উপজেলা, জেলা]'}, জাতীয় পরিচয়পত্র নং: ${data.nid || '[জাতীয় পরিচয়পত্র নম্বর]'} (যদি থাকে), জন্ম তারিখ: ${data.dob || '[জন্ম তারিখ]'}।
+                        <br/><br/>তিনি জন্মসূত্রে বাংলাদেশের নাগরিক এবং অত্র ইউনিয়নের স্থায়ী বাসিন্দা। আমার জানামতে, তিনি অবিবাহিত।
+                        <br/><br/>আমি তাহার উজ্জ্বল ভবিষ্যৎ কামনা করি।`
+                    },
+                    en: {
+                        title: 'Unmarried Certificate',
+                        body: `This is to certify that Mr./Ms. ${data.name || '[Applicant Name]'}, Son/Daughter of ${data.fatherName || '[Father\'s Name]'}, Mother: ${data.motherName || '[Mother\'s Name]'}, Village: ${data.address || '[Village, Post Office, Upazila, District]'}, National ID No: ${data.nid || '[National ID Number]'} (if any), Date of Birth: ${data.dob || '[Date of Birth]'}.
+                        <br/><br/>He/She is a Bangladeshi citizen by birth and a permanent resident of this Union. To my best knowledge, he/she is unmarried.
+                        <br/><br/>I wish him/her a bright future.`
+                    }
+                },
+                'non-voter': {
+                    bn: {
+                        title: 'ভোটার হয়নি প্রত্যয়নপত্র',
+                        body: `এই মর্মে প্রত্যয়ন করা যাইতেছে যে, ${data.name || '[আবেদনকারীর নাম]'}, পিতা: ${data.fatherName || '[পিতার নাম]'}, মাতা: ${data.motherName || '[মাতার নাম]'}, গ্রাম: ${data.address || '[গ্রাম, ডাকঘর, উপজেলা, জেলা]'}, জন্ম তারিখ: ${data.dob || '[জন্ম তারিখ]'} ${data.birthRegistrationNumber ? `, জন্মনিবন্ধন নাম্বার: ${data.birthRegistrationNumber}` : ''}।
+                        <br/><br/>তিনি জন্মসূত্রে বাংলাদেশের নাগরিক এবং অত্র ইউনিয়নের স্থায়ী বাসিন্দা। আমার জানামতে, তিনি এখনও ভোটার তালিকায় অন্তর্ভুক্ত হননি।
+                        <br/><br/>আমি তাহার উজ্জ্বল ভবিষ্যৎ কামনা করি।`
+                    },
+                    en: {
+                        title: 'Non-Voter Certificate',
+                        body: `This is to certify that Mr./Ms. ${data.name || '[Applicant Name]'}, Son/Daughter of ${data.fatherName || '[Father\'s Name]'}, Mother: ${data.motherName || '[Mother\'s Name]'}, Village: ${data.address || '[Village, Post Office, Upazila, District]'}, Date of Birth: ${data.dob || '[Date of Birth]'} ${data.birthRegistrationNumber ? `, Birth Registration Number: ${data.birthRegistrationNumber}` : ''}।
+                        <br/><br/>He/She is a Bangladeshi citizen by birth and a permanent resident of this Union. To my best knowledge, he/she has not yet been included in the voter list.
+                        <br/><br/>I wish him/her a bright future.`
+                    }
+                },
+                'permanent-resident': {
+                    bn: {
+                        title: 'স্থায়ী বাসিন্দা প্রত্যয়নপত্র',
+                        body: `এই মর্মে প্রত্যয়ন করা যাইতেছে যে, ${data.name || '[আবেদনকারীর নাম]'}, পিতা: ${data.fatherName || '[পিতার নাম]'}, মাতা: ${data.motherName || '[মাতার নাম]'}, বর্তমান ঠিকানা: ${data.currentAddress || '[বর্তমান ঠিকানা]'}, স্থায়ী ঠিকানা: ${data.permanentAddress || '[স্থায়ী ঠিকানা]'}, জাতীয় পরিচয়পত্র নং: ${data.nid || '[জাতীয় পরিচয়পত্র নম্বর]'} (যদি থাকে)।
+                        <br/><br/> তিনি জন্মসূত্রে বাংলাদেশের নাগরিক এবং অত্র ইউনিয়নের স্থায়ী বাসিন্দা।
+                        <br/><br/>আমি তাহার উজ্জ্বল ভবিষ্যৎ কামনা করি।`
+                    },
+                    en: {
+                        title: 'Permanent Resident Certificate',
+                        body: `This is to certify that Mr./Ms. ${data.name || '[Applicant Name]'}, Son/Daughter of ${data.fatherName || '[Father\'s Name]'}, Mother: ${data.motherName || '[Mother\'s Name]'}, Current Address: ${data.currentAddress || '[Current Address]'}, Permanent Address: ${data.permanentAddress || '[Permanent Address]'}, National ID No: ${data.nid || '[National ID Number]'} (if any).
+                        <br/><br/>He/She is a Bangladeshi citizen by birth and a permanent resident of this Union.
+                        <br/><br/>I wish him/her a bright future.`
+                    }
+                },
+                'nid-change': {
+                    bn: {
+                        title: 'ছবি ও স্বাক্ষর পরিবর্তন সংক্রান্ত প্রত্যয়নপত্র',
+                        body: `এহাতে প্রত্যয়ন করা যাইতেছে যে, <strong>জনাব/জনাবা ${data.name || '[নাম]'}</strong>, পিতা: ${data.fatherName || '[পিতার নাম]'},  
+                        মাতা: ${data.motherName || '[মাতার নাম]'}, জাতীয় পরিচয়পত্র নম্বর: ${data.oldNid || '[NID নম্বর]'} — তাহার জাতীয় পরিচয়পত্রে থাকা 
+                        পুরাতন ছবি ও স্বাক্ষর পরিবর্তন করে নতুন ছবি ও নমুনা স্বাক্ষর গ্রহণ করিতে ইচ্ছুক।
+
+                        তাহার অনুরোধক্রমে নিম্নের ছবি ও নমুনা স্বাক্ষর গ্রহণযোগ্য মর্মে এই প্রত্যয়ন প্রদান করা হইল।
+
+                        (এখানে ছবির জন্য স্থান এবং তিনটি নমুনা স্বাক্ষরের জন্য স্থান থাকবে। এই অংশটি প্রিন্ট করার সময় স্বয়ংক্রিয়ভাবে ফরম্যাট হবে।)
+                        `
+                    },
+                    en: {
+                        title: 'NID Photo and Signature Change Certificate',
+                        body: `This is to certify that Mr./Ms. <strong>${data.name || '[Applicant Name]'}</strong>, Father: ${data.fatherName || '[Father\'s Name]'},  
+                        Mother: ${data.motherName || '[Mother\'s Name]'}, National ID No: ${data.oldNid || '[NID Number]'} — is willing to change the old photo and signature on his/her National ID card and adopt new photo and sample signatures.
+
+                        Upon his/her request, this certificate is issued stating that the following photo and sample signatures are acceptable.
+
+                        (This section will contain space for a photo and three sample signatures, formatted automatically upon printing.)
+                        `
+                    }
+                }
+            };
+            return texts[type]?.[lang] || { title: '', body: '' };
+        }
+
+        // This function is now only for generating the full HTML for PDF/Print, not for rendering the preview page's editable content.
+        function generateFullCertificateHtmlForPdfAndPrint(bodyContent, lang, settings, certType, data) { // Added 'data' parameter
+            const today = new Date();
+            const day = today.getDate();
+            const year = today.getFullYear();
+
+            const bengaliMonths = [
+                'জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
+                'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'
+            ];
+            const bengaliMonth = bengaliMonths[today.getMonth()];
+            const bengaliYear = (year + 593).toLocaleString('bn-BD');
+            const bengaliDay = day.toLocaleString('bn-BD');
+
+            const bengaliDate = `${bengaliDay} ${bengaliMonth}, ${bengaliYear}`;
+            const englishDate = today.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+
+            const mainHeadingBn = settings.mainHeading;
+            const detailedAddressBn = settings.detailedAddress;
+            const mainHeadingEn = settings.mainHeadingEn || settings.mainHeading;
+            const detailedAddressEn = settings.detailedAddressEn || settings.detailedAddress;
+            
+            const designation = lang === 'bn' ? settings.designation : settings.designationEn || settings.designation;
+            const preparerDesignation = lang === 'bn' ? settings.preparerDesignation : settings.preparerDesignationEn || settings.preparerDesignation;
+            const identifierDesignation = lang === 'bn' ? settings.identifierDesignation : settings.identifierDesignationEn || settings.identifierDesignation;
+            const smarakNoText = lang === 'bn' ? 'স্মারক নং:' : 'Memo No:';
+
+            if (certType === 'nid-change') {
+                let htmlContent = userNidChangeTemplate;
+
+                // Replace placeholders in the user's template
+                htmlContent = htmlContent.replace(/\[নাম\]/g, data.name || '');
+                htmlContent = htmlContent.replace(/\[পিতার নাম\]/g, data.fatherName || '');
+                htmlContent = htmlContent.replace(/\[মাতার নাম\]/g, data.motherName || '');
+                htmlContent = htmlContent.replace(/\[NID নম্বর\]/g, data.oldNid || '');
+                htmlContent = htmlContent.replace(/\[তারিখ\]/g, lang === 'bn' ? bengaliDate : englishDate);
+                htmlContent = htmlContent.replace(/\[কর্মকর্তার নাম\]/g, lang === 'bn' ? settings.designation : settings.designationEn || settings.designation);
+                htmlContent = htmlContent.replace(/\[কর্মকর্তার পদবি\]/g, lang === 'bn' ? settings.designation : settings.designationEn || settings.designation);
+                htmlContent = htmlContent.replace(/\[কর্মকর্তার দপ্তর\]/g, lang === 'bn' ? mainHeadingBn : mainHeadingEn);
+
+                return htmlContent;
+
+            } else {
+                // Existing logic for other certificate types
+                const unionLogoHtml = settings.unionLogoUrl ?
+                    `<div style="width: 4rem; height: 4rem; display: flex; align-items: center; justify-content: center;">
+                        <img src="${settings.unionLogoUrl}" alt="Union Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.onerror=null;this.src='https://placehold.co/64x64/cccccc/000000?text=Logo';">
+                    </div>` :
+                    `<div style="width: 4rem; height: 4rem; display: flex; align-items: center; justify-content: center; visibility: hidden;"></div>`;
+
+                const mujibLogoHtml = settings.mujibLogoUrl ?
+                    `<div style="width: 4rem; height: 4rem; display: flex; align-items: center; justify-content: center;">
+                        <img src="${settings.mujibLogoUrl}" alt="Mujib 100 Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.onerror=null;this.src='https://placehold.co/64x64/cccccc/000000?text=Mujib';">
+                    </div>` :
+                    `<div style="width: 4rem; height: 4rem; display: flex; align-items: center; justify-content: center; visibility: hidden;"></div>`;
+
+                const commonHeaderHtml = `
+                    <div style="text-align: center; margin-bottom: 2rem; border-radius: 0.5rem; background-color: ${settings.headerBgColor || 'transparent'};">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            ${unionLogoHtml}
+                            <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; width: 100%;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                    <div style="text-align: left; flex: 1; padding-right: 0.5rem;">
+                                        <h1 style="font-size: 1.5rem; font-weight: 700; white-space: nowrap; font-family: 'Hind Siliguri', sans-serif;">${mainHeadingBn}</h1>
+                                        <p style="font-size: 1.125rem; font-weight: 500; font-family: 'Hind Siliguri', sans-serif;">${detailedAddressBn}</p>
+                                    </div>
+                                    <!-- Vertical line added here -->
+                                    <div style="border-left: 2px solid #2d3748; height: 4rem; margin: 0 1rem;"></div>
+                                    <div style="text-align: right; flex: 1; padding-left: 0.5rem;">
+                                        <h1 style="font-size: 1.5rem; font-weight: 700; white-space: nowrap; font-family: 'Hind Siliguri', sans-serif;">${mainHeadingEn}</h1>
+                                        <p style="font-size: 1.125rem; font-weight: 500; font-family: 'Hind Siliguri', sans-serif;">${detailedAddressEn}</p>
+                                    </div>
+                                </div>
+                                <div style="border-bottom: 2px solid #2d3748; width: 100%; margin-top: 0.5rem;"></div>
+                            </div>
+                            ${mujibLogoHtml}
+                        </div>
+                    </div>
+                `;
+
+                const memoAndDateHtml = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2rem;">
+                        <p style="text-align: left; font-size: 0.875rem; font-family: 'Hind Siliguri', 'Kalpurush', 'SolaimanLipi', sans-serif; margin: 0; padding: 0;">${smarakNoText} .......................................</p>
+                        <div style="text-align: right; font-size: 0.75rem; font-family: 'Hind Siliguri', 'Kalpurush', 'SolaimanLipi', sans-serif;">
+                            <p style="margin: 0; padding: 0;">${bengaliDate}</p>
+                            <div style="border-bottom: 1px solid #2d3748; width: 6rem; margin: 0.25rem auto;"></div>
+                            <p style="margin: 0; padding: 0;">${englishDate}</p>
+                        </div>
+                    </div>
+                `;
+
+                const signatureBlockHtml = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 4rem; text-align: center;">
+                        <div style="flex: 1;">
+                            <p style="font-weight: 600; font-family: 'Hind Siliguri', 'Kalpurush', 'SolaimanLipi', sans-serif;">${preparerDesignation}</p>
+                            <p style="font-family: 'Hind Siliguri', 'Kalpurush', 'SolaimanLipi', sans-serif;">${mainHeadingBn}</p>
+                        </div>
+                        <div style="flex: 1;">
+                            <p style="font-weight: 600; font-family: 'Hind Siliguri', 'Kalpurush', 'SolaimanLipi', sans-serif;">${identifierDesignation}</p>
+                            <p style="font-family: 'Hind Siliguri', 'Kalpurush', 'SolaimanLipi', sans-serif;">${mainHeadingBn}</p>
+                        </div>
+                        <div style="flex: 1;">
+                            <p style="font-weight: 600; font-family: 'Hind Siliguri', 'Kalpurush', 'SolaimanLipi', sans-serif;">${designation}</p>
+                            <p style="font-family: 'Hind Siliguri', 'Kalpurush', 'SolaimanLipi', sans-serif;">${mainHeadingBn}</p>
+                        </div>
+                    </div>
+                `;
+
+                return `
+                    <!DOCTYPE html>
+                    <html>
+                        <head>
+                            <title>প্রত্যয়নপত্র</title>
+                            <style>
+                                @page {
+                                    size: A4;
+                                    margin: 1in;
+                                }
+
+                                body {
+                                    font-family: Kalpurush, SolaimanLipi, Arial, sans-serif;
+                                    line-height: 1.6;
+                                    margin: 0;
+                                    padding: 0;
+                                    -webkit-print-color-adjust: exact;
+                                    print-color-adjust: exact;
+                                }
+
+                                h2 {
+                                    text-align: center;
+                                    text-decoration: underline;
+                                    margin-top: 40px;
+                                }
+
+                                p {
+                                    text-align: justify;
+                                    margin: 20px 0;
+                                    padding: 0 50px;
+                                }
+
+                                table {
+                                    width: 90%;
+                                    border-collapse: collapse;
+                                    margin: 30px auto;
+                                }
+
+                                td {
+                                    border: 2px solid black;
+                                }
+
+                                .photo-cell {
+                                    width: 60%;
+                                    height: 300px;
+                                    text-align: center;
+                                    vertical-align: middle;
+                                }
+
+                                .signature-cell {
+                                    width: 40%;
+                                    height: 100px;
+                                    text-align: center;
+                                    vertical-align: middle;
+                                }
+
+                                .label {
+                                    font-weight: bold;
+                                    margin-bottom: 5px;
+                                }
+
+                                .footer {
+                                    margin-top: 50px;
+                                    padding: 0 50px;
+                                }
+
+                                .right-align {
+                                    text-align: right;
+                                    margin-top: 50px;
+                                    padding-right: 50px;
+                                }
+
+                                @media print {
+                                    body {
+                                        margin: 0;
+                                    }
+                                }
+
+                                /* General styles for the certificate container and header, adapted to be generic */
+                                .certificate-container {
+                                    width: 210mm;
+                                    min-height: 297mm;
+                                    margin: 0 auto;
+                                    box-sizing: border-box;
+                                    color: #1a202c;
+                                    font-size: 14px;
+                                    line-height: 1.6;
+                                }
+                                .content-wrapper {
+                                    padding: 0 20mm; /* This should be consistent with the 1in margin */
+                                    box-sizing: border-box;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="certificate-container">
+                                ${commonHeaderHtml}
+                                <div class="content-wrapper">
+                                    ${memoAndDateHtml}
+                                    ${bodyContent}
+                                    ${signatureBlockHtml}
+                                </div>
+                            </div>
+                        </body>
+                    </html>
+                `;
+            }
+        }
+
+        // --- Page Rendering Functions ---
+        function renderLoading() {
+            mainContentDiv.innerHTML = `
+                <div class="flex items-center justify-center min-h-screen bg-gray-100">
+                    <div class="text-lg font-semibold text-gray-700 font-hind-siliguri">লোড হচ্ছে...</div>
+                </div>
+            `;
+        }
+
+        function renderError() {
+            mainContentDiv.innerHTML = `
+                <div class="flex items-center justify-center min-h-screen bg-red-100 text-red-700 p-4 rounded-lg">
+                    <p class="font-hind-siliguri">${error}</p>
+                </div>
+            `;
+        }
+
+        function renderHomePage() {
+            mainContentDiv.innerHTML = `
+                <div class="text-center bg-white p-10 rounded-lg shadow-lg">
+                    <h2 class="text-4xl font-extrabold text-blue-800 mb-6 font-hind-siliguri">স্বাগতম!</h2>
+                    <p class="text-lg text-gray-700 mb-8 max-w-2xl mx-auto font-hind-siliguri">
+                        এই অ্যাপ্লিকেশনটি আপনাকে ইউনিয়ন পরিষদের বিভিন্ন প্রত্যয়নপত্র যেমন অবিবাহিত, ভোটার হয়নি, স্থায়ী বাসিন্দা ইত্যাদি সহজে তৈরি করতে সাহায্য করবে।
+                    </p>
+                    <div class="flex justify-center space-x-4">
+                        <button id="home-create-btn" class="btn-primary font-hind-siliguri">
+                            নতুন প্রত্যয়নপত্র তৈরি করুন
+                        </button>
+                        <button id="home-view-btn" class="btn-secondary font-hind-siliguri">
+                            সংরক্ষিত প্রত্যয়নপত্র দেখুন
+                        </button>
+                    </div>
+                    ${userId ? `<p class="mt-8 text-sm text-gray-500 font-hind-siliguri">আপনার ইউজার আইডি: <span class="font-mono break-all">${userId}</span></p>` : ''}
+                </div>
+            `;
+            document.getElementById('home-create-btn').addEventListener('click', () => navigateTo('create'));
+            document.getElementById('home-view-btn').addEventListener('click', () => navigateTo('view'));
+        }
+
+        function renderCreatePage() {
+            const fieldsToRender = appSettings.certificateFieldConfig[selectedCertificateType] || [];
+            const formFieldsHtml = fieldsToRender.length === 0
+                ? `<p class="text-gray-600 font-hind-siliguri">এই প্রত্যয়নপত্রের জন্য কোন ইনপুট ফিল্ড নির্বাচন করা হয়নি। অনুগ্রহ করে সেটিংস থেকে নির্বাচন করুন।</p>`
+                : fieldsToRender.map(fieldName => {
+                    const fieldInfo = allPossibleFields[fieldName];
+                    if (!fieldInfo) return '';
+                    const labelText = fieldInfo[certificateLanguage];
+                    const placeholderText = getPlaceholder(fieldName, certificateLanguage);
+
+                    if (fieldInfo.type === 'textarea') {
+                        return `
+                            <div class="col-span-full">
+                                <label for="create-${fieldName}" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                    ${labelText}:
+                                </label>
+                                <textarea
+                                    id="create-${fieldName}"
+                                    name="${fieldName}"
+                                    placeholder="${placeholderText}"
+                                    class="input-field h-24"
+                                >${formData[fieldName] || ''}</textarea>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div>
+                                <label for="create-${fieldName}" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                    ${labelText}:
+                                </label>
+                                <input
+                                    type="${fieldInfo.type}"
+                                    id="create-${fieldName}"
+                                    name="${fieldName}"
+                                    placeholder="${placeholderText}"
+                                    value="${formData[fieldName] || ''}"
+                                    class="input-field"
+                                />
+                            </div>
+                        `;
+                    }
+                }).join('');
+
+            mainContentDiv.innerHTML = `
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-8 font-hind-siliguri">নতুন প্রত্যয়নপত্র তৈরি করুন</h2>
+
+                    <div class="flex flex-col md:flex-row gap-6 mb-8">
+                        <div class="flex-1 p-6 bg-gray-50 rounded-lg shadow-inner">
+                            <label class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                প্রত্যয়নপত্রের ভাষা নির্বাচন করুন:
+                            </label>
+                            <div class="flex flex-col space-y-2">
+                                <label class="text-gray-700 font-semibold font-hind-siliguri flex items-center">
+                                    <input
+                                        type="radio"
+                                        name="certificateLanguage"
+                                        value="bn"
+                                        ${certificateLanguage === 'bn' ? 'checked' : ''}
+                                        class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                    />
+                                    বাংলা
+                                </label>
+                                <label class="text-gray-700 font-semibold font-hind-siliguri flex items-center">
+                                    <input
+                                        type="radio"
+                                        name="certificateLanguage"
+                                        value="en"
+                                        ${certificateLanguage === 'en' ? 'checked' : ''}
+                                        class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                    />
+                                    English
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 p-6 bg-gray-50 rounded-lg shadow-inner">
+                            <label for="certificateType" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                প্রত্যয়নপত্রের ধরণ নির্বাচন করুন:
+                            </label>
+                            <select
+                                id="certificateType"
+                                class="input-field font-hind-siliguri"
+                            >
+                                <option value="">-- নির্বাচন করুন --</option>
+                                <option value="unmarried" ${selectedCertificateType === 'unmarried' ? 'selected' : ''} class="font-hind-siliguri">অবিবাহিত প্রত্যয়নপত্র</option>
+                                <option value="non-voter" ${selectedCertificateType === 'non-voter' ? 'selected' : ''} class="font-hind-siliguri">ভোটার হয়নি প্রত্যয়নপত্র</option>
+                                <option value="permanent-resident" ${selectedCertificateType === 'permanent-resident' ? 'selected' : ''} class="font-hind-siliguri">স্থায়ী বাসিন্দা প্রত্যয়নপত্র</option>
+                                <option value="nid-change" ${selectedCertificateType === 'nid-change' ? 'selected' : ''} class="font-hind-siliguri">এনআইডি ছবি ও স্বাক্ষর পরিবর্তন প্রত্যয়নপত্র</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    ${selectedCertificateType ? `
+                    <div class="mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-gray-50 rounded-lg shadow-inner">
+                            <h3 class="text-xl font-semibold text-gray-800 col-span-full mb-4 font-hind-siliguri">
+                                ${selectedCertificateType === 'unmarried' ? 'অবিবাহিত প্রত্যয়নপত্র' :
+                                selectedCertificateType === 'non-voter' ? 'ভোটার হয়নি প্রত্যয়নপত্র' :
+                                selectedCertificateType === 'permanent-resident' ? 'স্থায়ী বাসিন্দা প্রত্যয়নপত্র' :
+                                selectedCertificateType === 'nid-change' ? 'এনআইডি ছবি ও স্বাক্ষর পরিবর্তন প্রত্যয়নপত্র' : ''}
+                            </h3>
+                            ${formFieldsHtml}
+                        </div>
+                    </div>` : ''}
+
+                    <div class="flex justify-end space-x-4">
+                        <button id="create-cancel-btn" class="btn-secondary font-hind-siliguri">
+                            বাতিল করুন
+                        </button>
+                        <button id="generate-certificate-btn" class="btn-primary font-hind-siliguri" ${!selectedCertificateType || Object.keys(formData).length === 0 ? 'disabled' : ''}>
+                            প্রত্যয়নপত্র তৈরি করুন
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners
+            document.querySelectorAll('input[name="certificateLanguage"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    certificateLanguage = e.target.value;
+                    renderCreatePage(); // Re-render to update labels/placeholders
+                });
+            });
+
+            document.getElementById('certificateType').addEventListener('change', (e) => {
+                selectedCertificateType = e.target.value;
+                formData = {}; // Clear form data on type change
+                renderCreatePage(); // Re-render to show relevant fields
+            });
+
+            fieldsToRender.forEach(fieldName => {
+                const inputElement = document.getElementById(`create-${fieldName}`);
+                if (inputElement) {
+                    inputElement.addEventListener('input', (e) => {
+                        let value = e.target.value;
+                        if (certificateLanguage === 'en') {
+                            value = value.replace(/[\u0980-\u09FF]/g, '');
+                        } else if (certificateLanguage === 'bn') {
+                            value = value.replace(/[a-zA-Z]/g, '');
+                        }
+                        formData[fieldName] = value;
+                        // Enable generate button if form is not empty
+                        const generateBtn = document.getElementById('generate-certificate-btn');
+                        if (generateBtn) {
+                            generateBtn.disabled = !selectedCertificateType || Object.keys(formData).length === 0;
+                        }
+                    });
+                }
+            });
+
+            document.getElementById('create-cancel-btn').addEventListener('click', () => navigateTo('home'));
+            document.getElementById('generate-certificate-btn').addEventListener('click', handleGenerateCertificate);
+        }
+
+        function renderPreviewPage() {
+            console.log("renderPreviewPage called. Current appSettings.mainHeading:", appSettings.mainHeading); // Added log
+            const today = new Date();
+            const bengaliDate = today.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }).replace(/(\d+)\s(\S+),\s(\d+)/, (match, day, month, year) => {
+                const bengaliMonthsMap = {
+                    'জানুয়ারী': 'জানুয়ারি', 'ফেব্রুয়ারী': 'ফেব্রুয়ারি', 'মার্চ': 'মার্চ', 'এপ্রিল': 'এপ্রিল', 'মে': 'মে', 'জুন': 'জুন',
+                    'জুলাই': 'জুলাই', 'আগস্ট': 'আগস্ট', 'সেপ্টেম্বর': 'সেপ্টেম্বর', 'অক্টোবর': 'অক্টোবর', 'নভেম্বর': 'নভেম্বর', 'ডিসেম্বর': 'ডিসেম্বর'
+                };
+                return `${day} ${bengaliMonthsMap[month] || month}, ${year}`;
+            });
+            const englishDate = today.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+
+            const smarakNoText = certificateLanguage === 'bn' ? 'স্মারক নং:' : 'Memo No:';
+            const preparerDesignation = certificateLanguage === 'bn' ? appSettings.preparerDesignation : appSettings.preparerDesignationEn || appSettings.preparerDesignation;
+            const identifierDesignation = certificateLanguage === 'bn' ? appSettings.identifierDesignation : appSettings.identifierDesignationEn || appSettings.identifierDesignation;
+            const designation = certificateLanguage === 'bn' ? appSettings.designation : appSettings.designationEn || appSettings.designation;
+            const mainHeadingForFooter = certificateLanguage === 'bn' ? appSettings.mainHeading : appSettings.mainHeadingEn || appSettings.mainHeading;
+
+            const unionLogoHtml = appSettings.unionLogoUrl ?
+                `<div class="w-16 h-16 flex items-center justify-center">
+                    <img src="${appSettings.unionLogoUrl}" alt="Union Logo" class="max-w-full max-h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/64x64/cccccc/000000?text=Logo';">
+                </div>` :
+                `<div class="w-16 h-16 flex items-center justify-center" style="visibility: hidden;"></div>`;
+
+            const mujibLogoHtml = appSettings.mujibLogoUrl ?
+                `<div class="w-16 h-16 flex items-center justify-center">
+                    <img src="${appSettings.mujibLogoUrl}" alt="Mujib 100 Logo" class="max-w-full max-h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/64x64/cccccc/000000?text=Mujib';">
+                </div>` :
+                `<div class="w-16 h-16 flex items-center justify-center" style="visibility: hidden;"></div>`;
+
+            mainContentDiv.innerHTML = `
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center font-hind-siliguri">প্রত্যয়নপত্রের পূর্বরূপ</h2>
+
+                    <div id="printable-preview-area">
+                        <!-- Header section (reusing print-specific classes for consistency) -->
+                        <div class="text-center mb-8 rounded-lg" style="background-color: ${appSettings.headerBgColor || 'transparent'};">
+                            <div class="flex justify-between items-center mb-4">
+                                ${unionLogoHtml}
+                                <div class="flex-grow flex flex-col items-center w-full">
+                                    <div class="flex justify-between items-center w-full">
+                                        <div class="text-left flex-1 pr-2">
+                                            <h1 class="text-2xl font-bold whitespace-nowrap font-hind-siliguri">${appSettings.mainHeading}</h1>
+                                            <p class="text-lg font-medium font-hind-siliguri">${appSettings.detailedAddress}</p>
+                                        </div>
+                                        <!-- Vertical line added here -->
+                                        <div class="border-l-2 border-gray-800 h-16 mx-4"></div>
+                                        <div class="text-right flex-1 pl-2">
+                                            <h1 class="text-2xl font-bold whitespace-nowrap font-hind-siliguri">${appSettings.mainHeadingEn || appSettings.mainHeading}</h1>
+                                            <p class="text-lg font-medium font-hind-siliguri">${appSettings.detailedAddressEn || appSettings.detailedAddress}</p>
+                                        </div>
+                                    </div>
+                                    <div class="border-b-2 border-gray-800 w-full mt-2"></div>
+                                </div>
+                                ${mujibLogoHtml}
+                            </div>
+                        </div>
+
+                        <!-- Content Wrapper (mimicking content-wrapper from print) -->
+                        <div class="content-wrapper" style="padding: 0 20mm; box-sizing: border-box;">
+                            <!-- Memo No. and Date section -->
+                            <div class="flex justify-between items-center w-full mb-8">
+                                <p class="text-left font-hind-siliguri text-sm font-kalpurush font-solaiman-lipi">${smarakNoText} .......................................</p>
+                                <div class="text-right text-xs font-hind-siliguri font-kalpurush font-solaiman-lipi">
+                                    <p>${bengaliDate}</p>
+                                    <div class="border-b border-gray-800 w-24 mx-auto my-1"></div>
+                                    <p>${englishDate}</p>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Title (now separate) -->
+                            <h2 id="dynamic-certificate-title" class="text-xl font-semibold mb-4 text-center font-hind-siliguri"></h2>
+
+                            <!-- Editable Body section (only the body content is editable) -->
+                            <div
+                                id="certificate-body-editable-content"
+                                class="mb-8 p-0 overflow-auto font-hind-siliguri"
+                                contentEditable="true"
+                                style="min-height: 150mm; width: auto;"
+                            ></div>
+
+                            <!-- Footer section -->
+                            ${selectedCertificateType === 'nid-change' ? `
+                                <div class="footer">
+                                    <p>তারিখ: ${certificateLanguage === 'bn' ? bengaliDate : englishDate}</p>
+                                </div>
+
+                                <div class="right-align">
+                                    প্রত্যয়নকারী কর্মকর্তা<br>
+                                    নাম: ${certificateLanguage === 'bn' ? appSettings.designation : appSettings.designationEn || appSettings.designation}<br>
+                                    পদবি: ${certificateLanguage === 'bn' ? appSettings.designation : appSettings.designationEn || appSettings.designation}<br>
+                                    দপ্তর: ${certificateLanguage === 'bn' ? appSettings.mainHeading : appSettings.mainHeadingEn || appSettings.mainHeading}<br>
+                                </div>
+                            ` : `
+                                <div class="flex justify-between items-end mt-16 text-center">
+                                    <div class="flex-1">
+                                        <p class="font-semibold font-hind-siliguri font-kalpurush font-solaiman-lipi">${preparerDesignation}</p>
+                                        <p class="font-hind-siliguri font-kalpurush font-solaiman-lipi">${mainHeadingForFooter}</p>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-semibold font-hind-siliguri font-kalpurush font-solaiman-lipi">${identifierDesignation}</p>
+                                        <p class="font-hind-siliguri font-kalpurush font-solaiman-lipi">${mainHeadingForFooter}</p>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-semibold font-hind-siliguri font-kalpurush font-solaiman-lipi">${designation}</p>
+                                        <p class="font-hind-siliguri font-kalpurush font-solaiman-lipi">${mainHeadingForFooter}</p>
+                                    </div>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center space-x-4 mt-8">
+                        <button id="preview-back-btn" class="btn-secondary font-hind-siliguri">
+                            ফর্মে ফিরে যান
+                        </button>
+                        <button id="download-pdf-btn" class="btn-green font-hind-siliguri">
+                            PDF ডাউনলোড করুন
+                        </button>
+                        <button id="print-certificate-btn" class="btn-primary font-hind-siliguri">
+                            প্রিন্ট করুন
+                        </button>
+                        <button id="save-certificate-btn" class="btn-primary font-hind-siliguri">
+                            সংরক্ষণ করুন
+                        </button>
+                    </div>
+                </div>
+            `;
+            // The content for dynamic-certificate-title and certificate-body-editable-content
+            // is now set in navigateTo('preview') after the DOM is rendered.
+            // certificateRef.current is also set there.
+
+            // Add event listeners for preview page
+            document.getElementById('preview-back-btn').addEventListener('click', () => navigateTo('create'));
+            document.getElementById('download-pdf-btn').addEventListener('click', handleDownloadPdf);
+            document.getElementById('print-certificate-btn').addEventListener('click', handlePrintCertificate);
+            document.getElementById('save-certificate-btn').addEventListener('click', handleSaveCertificate);
+
+            // Handle content editable input
+            if (certificateRef.current) {
+                certificateRef.current.addEventListener('input', (e) => {
+                    // This ensures the cursor position is maintained
+                    const selection = window.getSelection();
+                    const range = selection.getRangeAt(0);
+                    const preCaretRange = range.cloneRange();
+                    preCaretRange.selectNodeContents(e.currentTarget);
+                    preCaretRange.setEnd(range.endContainer, range.endOffset);
+                    const caretOffset = preCaretRange.toString().length;
+
+                    setTimeout(() => {
+                        if (certificateRef.current) {
+                            let charCount = 0;
+                            let found = false;
+                            const nodes = certificateRef.current.childNodes;
+                            for (let i = 0; i < nodes.length; i++) {
+                                const node = nodes[i];
+                                if (node.nodeType === Node.TEXT_NODE) {
+                                    const nodeLength = node.textContent.length;
+                                    if (charCount + nodeLength >= caretOffset) {
+                                        selection.removeAllRanges();
+                                        const newRange = document.createRange();
+                                        newRange.setStart(node, caretOffset - charCount);
+                                        newRange.setEnd(node, caretOffset - charCount);
+                                        selection.addRange(newRange);
+                                        found = true;
+                                        break;
+                                    }
+                                    charCount += nodeLength;
+                                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                                    const elementText = node.textContent.length;
+                                    if (charCount + elementText >= caretOffset) {
+                                        selection.removeAllRanges();
+                                        const newRange = document.createRange();
+                                        newRange.selectNodeContents(node);
+                                        newRange.collapse(true);
+                                        selection.addRange(newRange);
+                                        found = true;
+                                        break;
+                                    }
+                                    charCount += elementText;
+                                }
+                            }
+                            if (!found) {
+                                selection.removeAllRanges();
+                                const newRange = document.createRange();
+                                newRange.selectNodeContents(certificateRef.current);
+                                newRange.collapse(false);
+                                selection.addRange(newRange);
+                            }
+                        }
+                    }, 0);
+                });
+            }
+        }
+
+        function renderViewPage() {
+            const certificatesHtml = certificates.length === 0 ?
+                `<p class="text-gray-600 text-center font-hind-siliguri">কোন প্রত্যয়নপত্র সংরক্ষিত নেই।</p>` :
+                `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${certificates.map(cert => `
+                        <div class="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition duration-200">
+                            <p class="text-lg font-semibold text-blue-700 mb-2 font-hind-siliguri">
+                                ${cert.type === 'unmarried' ? 'অবিবাহিত প্রত্যয়নপত্র' : cert.type === 'non-voter' ? 'ভোটার হয়নি প্রত্যয়নপত্র' : cert.type === 'permanent-resident' ? 'স্থায়ী বাসিন্দা প্রত্যয়নপত্র' : 'এনআইডি ছবি ও স্বাক্ষর পরিবর্তন প্রত্যয়নপত্র'}
+                                ${cert.language ? ` (${cert.language.toUpperCase()})` : ''}
+                            </p>
+                            <p class="text-gray-700 mb-1 font-hind-siliguri">নাম: ${cert.data.name || 'N/A'}</p>
+                            <p class="text-gray-700 mb-1 font-hind-siliguri">পিতার নাম: ${cert.data.fatherName || 'N/A'}</p>
+                            <p class="text-gray-700 mb-1 font-hind-siliguri">সংরক্ষণের তারিখ: ${new Date(cert.createdAt).toLocaleDateString('bn-BD')}</p>
+                            <div class="mt-4 flex justify-end space-x-3">
+                                <button
+                                    data-cert-id="${cert.id}"
+                                    class="view-cert-btn bg-blue-500 hover:bg-blue-600 text-white text-sm py-2 px-4 rounded-md transition duration-200 font-hind-siliguri"
+                                >
+                                    পুনরায় দেখুন
+                                </button>
+                                <button
+                                    data-cert-id="${cert.id}"
+                                    class="delete-cert-btn btn-red text-sm py-2 px-4 rounded-md transition duration-200 font-hind-siliguri"
+                                >
+                                    ডিলিট করুন
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>`;
+
+            mainContentDiv.innerHTML = `
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-8 font-hind-siliguri">সংরক্ষিত প্রত্যয়নপত্র</h2>
+                    ${certificatesHtml}
+                    <div class="mt-8 text-center">
+                        <button id="view-home-btn" class="btn-secondary font-hind-siliguri">
+                            হোমে ফিরে যান
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('view-home-btn').addEventListener('click', () => navigateTo('home'));
+            document.querySelectorAll('.view-cert-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const certId = e.target.dataset.certId;
+                    const cert = certificates.find(c => c.id === certId);
+                    if (cert) {
+                        selectedCertificateType = cert.type;
+                        formData = cert.data;
+                        certificateLanguage = cert.language || 'bn';
+                        navigateTo('preview');
+                        // The content for dynamic-certificate-title and certificate-body-editable-content
+                        // is now set in navigateTo('preview') after the DOM is rendered.
+                        // We also need to ensure that if a saved certificate has custom editable content,
+                        // it is loaded. This is handled by the navigateTo function for preview.
+                        setTimeout(() => { // Ensure this runs after navigateTo's setTimeout
+                            const editableBodyDiv = document.getElementById('certificate-body-editable-content');
+                            if (editableBodyDiv && cert.editableContent) {
+                                editableBodyDiv.innerHTML = cert.editableContent;
+                            }
+                        }, 10); // A small delay to ensure navigateTo's setTimeout completes first
+                    }
+                });
+            });
+
+            // Add event listener for delete buttons
+            document.querySelectorAll('.delete-cert-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const certId = e.target.dataset.certId;
+                    handleDeleteCertificate(certId);
+                });
+            });
+        }
+
+        function renderSettingsPage() {
+            console.log("Rendering Settings Page. appSettings.mainHeading:", appSettings.mainHeading);
+            const fieldConfigHtml = Object.keys(defaultFieldConfig).map(certType => `
+                <div class="border border-gray-200 p-4 rounded-md">
+                    <h4 class="text-lg font-semibold text-gray-700 mb-3 font-hind-siliguri">
+                        ${certType === 'unmarried' ? 'অবিবাহিত প্রত্যয়নপত্র' :
+                         certType === 'non-voter' ? 'ভোটার হয়নি প্রত্যয়নপত্র' :
+                         certType === 'permanent-resident' ? 'স্থায়ী বাসিন্দা প্রত্যয়নপত্র' :
+                         certType === 'nid-change' ? 'এনআইডি ছবি ও স্বাক্ষর পরিবর্তন প্রত্যয়নপত্র' : certType}
+                        এর জন্য ফিল্ড:
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        ${Object.keys(allPossibleFields).map(fieldName => `
+                            <label class="inline-flex items-center text-gray-700 font-hind-siliguri">
+                                <input
+                                    type="checkbox"
+                                    class="form-checkbox h-5 w-5 text-blue-600 settings-field-checkbox"
+                                    data-cert-type="${certType}"
+                                    data-field-name="${fieldName}"
+                                    ${appSettings.certificateFieldConfig[certType]?.includes(fieldName) ? 'checked' : ''}
+                                />
+                                <span class="ml-2">${allPossibleFields[fieldName][certificateLanguage]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            mainContentDiv.innerHTML = `
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-8 font-hind-siliguri">সেটিংস</h2>
+                    <div class="space-y-8">
+
+                        <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                            <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4 font-hind-siliguri">সাধারণ সেটিংস</h3>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="mainHeading" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                            প্রত্যয়নপত্রের মূল হেডিং (বাংলা):
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" id="mainHeading" name="mainHeading" placeholder="যেমন: ৬নং রানীহাটি ইউনিয়ন পরিষদ কার্যালয়" value="${appSettings.mainHeading || ''}" class="input-field flex-grow" disabled />
+                                            <button type="button" class="btn-primary edit-setting-btn font-hind-siliguri" data-setting-key="mainHeading">এডিট</button>
+                                            <button type="button" class="btn-green save-setting-btn hidden font-hind-siliguri" data-setting-key="mainHeading">সেভ</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="mainHeadingEn" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                            Certificate Main Heading (English):
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" id="mainHeadingEn" name="mainHeadingEn" placeholder="e.g., 6 No. Ranihati Union Parishad Office" value="${appSettings.mainHeadingEn || ''}" class="input-field flex-grow" disabled />
+                                            <button type="button" class="btn-primary edit-setting-btn font-hind-siliguri" data-setting-key="mainHeadingEn">এডিট</button>
+                                            <button type="button" class="btn-green save-setting-btn hidden font-hind-siliguri" data-setting-key="mainHeadingEn">সেভ</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="detailedAddress" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                            বিস্তারিত ঠিকানা ও যোগাযোগ (বাংলা):
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" id="detailedAddress" name="detailedAddress" placeholder="যেমন: ডাকঘরঃ রামচন্দ্রপুরহাট-৬৭০২, উপজেলাঃ চাঁপাইনবাবগঞ্জ সদর..." value="${appSettings.detailedAddress || ''}" class="input-field flex-grow" disabled />
+                                            <button type="button" class="btn-primary edit-setting-btn font-hind-siliguri" data-setting-key="detailedAddress">এডিট</button>
+                                            <button type="button" class="btn-green save-setting-btn hidden font-hind-siliguri" data-setting-key="detailedAddress">সেভ</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="detailedAddressEn" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                            Detailed Address & Contact (English):
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" id="detailedAddressEn" name="detailedAddressEn" placeholder="e.g., Post Office: Ramchandrapurhat-6702, Upazila: Chapainawabganj Sadar..." value="${appSettings.detailedAddressEn || ''}" class="input-field flex-grow" disabled />
+                                            <button type="button" class="btn-primary edit-setting-btn font-hind-siliguri" data-setting-key="detailedAddressEn">এডিট</button>
+                                            <button type="button" class="btn-green save-setting-btn hidden font-hind-siliguri" data-setting-key="detailedAddressEn">সেভ</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="designation" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                            চেয়ারম্যানের পদবী (বাংলা):
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" id="designation" name="designation" placeholder="যেমন: চেয়ারম্যান" value="${appSettings.designation || ''}" class="input-field flex-grow" disabled />
+                                            <button type="button" class="btn-primary edit-setting-btn font-hind-siliguri" data-setting-key="designation">এডিট</button>
+                                            <button type="button" class="btn-green save-setting-btn hidden font-hind-siliguri" data-setting-key="designation">সেভ</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="designationEn" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                            Chairman's Designation (English):
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" id="designationEn" name="designationEn" placeholder="e.g., Chairman" value="${appSettings.designationEn || ''}" class="input-field flex-grow" disabled />
+                                            <button type="button" class="btn-primary edit-setting-btn font-hind-siliguri" data-setting-key="designationEn">এডিট</button>
+                                            <button type="button" class="btn-green save-setting-btn hidden font-hind-siliguri" data-setting-key="designationEn">সেভ</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="preparerDesignation" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                            প্রস্তুত কারকের পদবী (বাংলা):
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" id="preparerDesignation" name="preparerDesignation" placeholder="যেমন: প্রস্তুত কারক" value="${appSettings.preparerDesignation || ''}" class="input-field flex-grow" disabled />
+                                            <button type="button" class="btn-primary edit-setting-btn font-hind-siliguri" data-setting-key="preparerDesignation">এডিট</button>
+                                            <button type="button" class="btn-green save-setting-btn hidden font-hind-siliguri" data-setting-key="preparerDesignation">সেভ</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="preparerDesignationEn" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                            Preparer Designation (English):
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" id="preparerDesignationEn" name="preparerDesignationEn" placeholder="e.g., Preparer" value="${appSettings.preparerDesignationEn || ''}" class="input-field flex-grow" disabled />
+                                            <button type="button" class="btn-primary edit-setting-btn font-hind-siliguri" data-setting-key="preparerDesignationEn">এডিট</button>
+                                            <button type="button" class="btn-green save-setting-btn hidden font-hind-siliguri" data-setting-key="preparerDesignationEn">সেভ</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="identifierDesignation" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                            শনাক্তকারীর পদবী (বাংলা):
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" id="identifierDesignation" name="identifierDesignation" placeholder="যেমন: শনাক্তকারী" value="${appSettings.identifierDesignation || ''}" class="input-field flex-grow" disabled />
+                                            <button type="button" class="btn-primary edit-setting-btn font-hind-siliguri" data-setting-key="identifierDesignation">এডিট</button>
+                                            <button type="button" class="btn-green save-setting-btn hidden font-hind-siliguri" data-setting-key="identifierDesignation">সেভ</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="identifierDesignationEn" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                            Identifier Designation (English):
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" id="identifierDesignationEn" name="identifierDesignationEn" placeholder="e.g., Identifier" value="${appSettings.identifierDesignationEn || ''}" class="input-field flex-grow" disabled />
+                                            <button type="button" class="btn-primary edit-setting-btn font-hind-siliguri" data-setting-key="identifierDesignationEn">এডিট</button>
+                                            <button type="button" class="btn-green save-setting-btn hidden font-hind-siliguri" data-setting-key="identifierDesignationEn">সেভ</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                            <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4 font-hind-siliguri">লোগো সেটিংস</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="unionLogoUrl" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                        ইউনিয়ন লোগো URL:
+                                    </label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="url" id="unionLogoUrl" name="unionLogoUrl" placeholder="ইউনিয়ন লোগোর ছবির URL দিন" value="${appSettings.unionLogoUrl || ''}" class="input-field flex-grow" disabled />
+                                        <button type="button" class="btn-primary edit-setting-btn font-hind-siliguri" data-setting-key="unionLogoUrl">এডিট</button>
+                                        <button type="button" class="btn-green save-setting-btn hidden font-hind-siliguri" data-setting-key="unionLogoUrl">সেভ</button>
+                                    </div>
+                                    ${appSettings.unionLogoUrl ? `<img src="${appSettings.unionLogoUrl}" alt="Union Logo Preview" class="mt-2 h-16 w-16 object-contain rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/64x64/cccccc/000000?text=Logo';" />` : ''}
+                                </div>
+                                <div>
+                                    <label for="mujibLogoUrl" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                        মুজিব ১০০ লোগো URL:
+                                    </label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="url" id="mujibLogoUrl" name="mujibLogoUrl" placeholder="মুজিব ১০০ লোগোর ছবির URL দিন" value="${appSettings.mujibLogoUrl || ''}" class="input-field flex-grow" disabled />
+                                        <button type="button" class="btn-primary edit-setting-btn font-hind-siliguri" data-setting-key="mujibLogoUrl">এডিট</button>
+                                        <button type="button" class="btn-green save-setting-btn hidden font-hind-siliguri" data-setting-key="mujibLogoUrl">সেভ</button>
+                                    </div>
+                                    ${appSettings.mujibLogoUrl ? `<img src="${appSettings.mujibLogoUrl}" alt="Mujib 100 Logo Preview" class="mt-2 h-16 w-16 object-contain rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/64x64/cccccc/000000?text=Mujib';" />` : ''}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                            <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4 font-hind-siliguri">রঙ ও চেহারা সেটিংস</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="headerBgColor" class="block text-gray-700 text-lg font-semibold mb-2 font-hind-siliguri">
+                                        হেডার ব্যাকগ্রাউন্ড কালার:
+                                    </label>
+                                    <input type="color" id="headerBgColor" name="headerBgColor" value="${appSettings.headerBgColor || '#e6ffe6'}" class="w-full h-12 rounded-md border border-gray-300 cursor-pointer" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                            <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4 font-hind-siliguri">প্রত্যয়নপত্রের ইনপুট ফিল্ড নিয়ন্ত্রণ</h3>
+                            <div class="space-y-6">
+                                ${fieldConfigHtml}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="flex justify-end space-x-4 mt-8">
+                        <button id="settings-cancel-btn" class="btn-secondary font-hind-siliguri">
+                            বাতিল করুন
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners for settings inputs and buttons
+            document.querySelectorAll('.edit-setting-btn').forEach(editButton => {
+                const settingKey = editButton.dataset.settingKey;
+                const input = document.getElementById(settingKey);
+                const saveButton = document.querySelector(`button.save-setting-btn[data-setting-key="${settingKey}"]`);
+
+                if (input && saveButton) {
+                    editButton.addEventListener('click', () => {
+                        input.disabled = false;
+                        editButton.classList.add('hidden');
+                        saveButton.classList.remove('hidden');
+                        input.focus();
+                    });
+
+                    saveButton.addEventListener('click', async () => {
+                        input.disabled = true;
+                        saveButton.classList.add('hidden');
+                        editButton.classList.remove('hidden');
+
+                        // Update local appSettings with the current value from the input field
+                        appSettings = { ...appSettings, [input.name]: input.value };
+                        console.log(`Saving setting for ${input.name}. New appSettings value:`, appSettings[input.name]);
+                        await handleSaveSettings(); // Save to Firebase
+                    });
+                }
+            });
+
+            // For color input, 'change' event is more appropriate and it will still auto-save
+            const headerBgColorInput = document.getElementById('headerBgColor');
+            if (headerBgColorInput) {
+                headerBgColorInput.addEventListener('change', async (e) => {
+                    appSettings = { ...appSettings, [e.target.name]: e.target.value };
+                    console.log(`Input changed for ${e.target.name}. New appSettings value:`, appSettings[e.target.name]);
+                    await handleSaveSettings(); // Save on change
+                });
+            }
+
+            document.querySelectorAll('.settings-field-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', async (e) => {
+                    const certType = e.target.dataset.certType;
+                    const fieldName = e.target.dataset.fieldName;
+                    const isChecked = e.target.checked;
+
+                    const newConfig = { ...appSettings.certificateFieldConfig };
+                    if (!newConfig[certType]) {
+                        newConfig[certType] = [];
+                    }
+
+                    if (isChecked) {
+                        if (!newConfig[certType].includes(fieldName)) {
+                            newConfig[certType] = [...newConfig[certType], fieldName];
+                        }
+                    } else {
+                        newConfig[certType] = newConfig[certType].filter(field => field !== fieldName);
+                    }
+                    appSettings = { ...appSettings, certificateFieldConfig: newConfig };
+                    await handleSaveSettings(); // Save on checkbox change
+                });
+            });
+
+            document.getElementById('settings-cancel-btn').addEventListener('click', () => navigateTo('home'));
+        }
+
+        // --- Event Handlers ---
+        async function handleGenerateCertificate() {
+            if (!selectedCertificateType || Object.keys(formData).length === 0) {
+                alertMessage("ফর্মের তথ্য পূরণ করুন এবং প্রত্যয়নপত্রের ধরণ নির্বাচন করুন।");
+                return;
+            }
+            error = null;
+            navigateTo('preview');
+        }
+
+        async function handleDownloadPdf() {
+            if (!selectedCertificateType) {
+                alertMessage("প্রত্যয়নপত্রের ধরণ নির্বাচন করা হয়নি।");
+                return;
+            }
+
+            loading = true;
+            render(); // Show loading state
+            try {
+                // Ensure html2canvas and jspdf are loaded
+                if (!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF) {
+                    error = "PDF লাইব্রেরি লোড হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।";
+                    render();
+                    return;
+                }
+
+                const html2canvas = window.html2canvas;
+                const jsPDF = window.jspdf.jsPDF;
+
+                let currentEditableContent;
+                let currentDynamicTitle;
+
+                // Fallback if certificateRef.current is not yet set (e.g., very fast click after navigation)
+                if (certificateRef.current && certificateRef.current.innerHTML) {
+                    currentEditableContent = certificateRef.current.innerHTML;
+                    currentDynamicTitle = document.getElementById('dynamic-certificate-title')?.innerHTML || '';
+                } else {
+                    // Regenerate content from data if the editable area is not ready
+                    const { title, body } = getCertificateTexts(selectedCertificateType, certificateLanguage, formData, false);
+                    currentEditableContent = body;
+                    currentDynamicTitle = title;
+                }
+
+                // For NID Change, bodyContent is not directly used, the whole template is generated
+                const combinedBodyContentForPdf = selectedCertificateType === 'nid-change' ? '' : `<h2>${currentDynamicTitle}</h2>${currentEditableContent}`;
+
+                const fullCertificateHtml = generateFullCertificateHtmlForPdfAndPrint(combinedBodyContentForPdf, certificateLanguage, appSettings, selectedCertificateType, formData); // Pass formData
+
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = fullCertificateHtml;
+                document.body.appendChild(tempDiv);
+
+                const images = tempDiv.querySelectorAll('img');
+                const imageLoadPromises = Array.from(images).map(img => {
+                    if (img.complete) return Promise.resolve();
+                    return new Promise(resolve => {
+                        img.onload = resolve;
+                        img.onerror = resolve;
+                    });
+                });
+                await Promise.all(imageLoadPromises);
+
+                const canvas = await html2canvas(tempDiv, { scale: 4 });
+                document.body.removeChild(tempDiv);
+
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 210;
+                const pageHeight = 297;
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                const filename = `${selectedCertificateType}_${formData.name || 'document'}_${certificateLanguage}.pdf`;
+                pdf.save(filename);
+            } catch (err) {
+                console.error("PDF তৈরি করতে সমস্যা হয়েছে:", err);
+                error = `PDF তৈরি করতে সমস্যা হয়েছে: ${err.message}`;
+            } finally {
+                loading = false;
+                render();
+            }
+        }
+
+        function handlePrintCertificate() {
+            if (!selectedCertificateType) {
+                alertMessage("প্রত্যয়নপত্রের ধরণ নির্বাচন করা হয়নি।");
+                return;
+            }
+
+            const printWindow = window.open('', '_blank');
+            let currentEditableContent;
+            let currentDynamicTitle;
+
+            if (certificateRef.current && certificateRef.current.innerHTML) {
+                currentEditableContent = certificateRef.current.innerHTML;
+                currentDynamicTitle = document.getElementById('dynamic-certificate-title')?.innerHTML || '';
+            } else {
+                const { title, body } = getCertificateTexts(selectedCertificateType, certificateLanguage, formData, false);
+                currentEditableContent = body;
+                currentDynamicTitle = title;
+            }
+
+            // For NID Change, bodyContent is not directly used, the whole template is generated
+            const combinedBodyContentForPrint = selectedCertificateType === 'nid-change' ? '' : `<h2>${currentDynamicTitle}</h2>${currentEditableContent}`;
+
+            const fullCertificateHtml = generateFullCertificateHtmlForPdfAndPrint(combinedBodyContentForPrint, certificateLanguage, appSettings, selectedCertificateType, formData); // Pass formData
+
+            printWindow.document.write(fullCertificateHtml);
+            printWindow.document.close();
+
+            printWindow.onload = function() {
+                printWindow.focus();
+                setTimeout(() => {
+                    printWindow.print();
+                    printWindow.close();
+                }, 500);
+            };
+        }
+
+        async function handleSaveCertificate() {
+            if (!dbInstance || !userId) {
+                alertMessage("ডাটাবেস উপলব্ধ নয় বা ব্যবহারকারী লগইন করেননি।");
+                return;
+            }
+            loading = true;
+            render();
+            try {
+                const certificatesCollectionRef = collection(dbInstance, `artifacts/${appId}/users/${userId}/certificates`);
+                const { body } = getCertificateTexts(selectedCertificateType, certificateLanguage, formData, false);
+
+                await addDoc(certificatesCollectionRef, {
+                    type: selectedCertificateType,
+                    data: formData,
+                    // Save only the innerHTML of the *editable body* div
+                    editableContent: certificateRef.current ? certificateRef.current.innerHTML : body,
+                    language: certificateLanguage,
+                    createdAt: new Date().toISOString(),
+                });
+                alertMessage("প্রত্যয়নপত্র সফলভাবে সংরক্ষণ করা হয়েছে!");
+                navigateTo('view');
+            } catch (e) {
+                console.error("প্রত্যয়নপত্র সংরক্ষণ করতে সমস্যা হয়েছে:", e);
+                error = `প্রত্যয়নপত্র সংরক্ষণ করতে সমস্যা হয়েছে: ${e.message}`;
+            } finally {
+                loading = false;
+                render();
+            }
+        }
+
+        async function handleDeleteCertificate(certId) {
+            if (!dbInstance || !userId) {
+                alertMessage("ডাটাবেস উপলব্ধ নয় বা ব্যবহারকারী লগইন করেননি।");
+                return;
+            }
+
+            const confirmDelete = await showCustomConfirm("আপনি কি নিশ্চিত যে আপনি এই প্রত্যয়নপত্রটি ডিলিট করতে চান?");
+            if (!confirmDelete) {
+                return;
+            }
+
+            loading = true;
+            render();
+            try {
+                const docRef = doc(dbInstance, `artifacts/${appId}/users/${userId}/certificates`, certId);
+                await deleteDoc(docRef);
+                alertMessage("প্রত্যয়নপত্র সফলভাবে ডিলিট করা হয়েছে!");
+                // onSnapshot will automatically update the 'certificates' array and re-render
+            } catch (e) {
+                console.error("প্রত্যয়নপত্র ডিলিট করতে সমস্যা হয়েছে:", e);
+                error = `প্রত্যয়নপত্র ডিলিট করতে সমস্যা হয়েছে: ${e.message}`;
+            } finally {
+                loading = false;
+                render();
+            }
+        }
+
+        async function handleSaveSettings() {
+            console.log("handleSaveSettings called. dbInstance:", dbInstance, "userId:", userId);
+            if (!dbInstance || !userId) {
+                alertMessage("ডাটাবেস উপলব্ধ নয় বা ব্যবহারকারী লগইন করেননি।");
+                return;
+            }
+            loading = true; // Set loading to true before starting save
+            render(); // Show loading screen
+            try {
+                const settingsDocRef = doc(dbInstance, `artifacts/${appId}/users/${userId}/settings/app_settings`);
+                await setDoc(settingsDocRef, appSettings, { merge: true });
+                alertMessage("সেটিংস সফলভাবে সংরক্ষণ করা হয়েছে!"); // Success message
+            } catch (e) {
+                console.error("সেটিংস সংরক্ষণ করতে সমস্যা হয়েছে:", e);
+                error = `সেটিংস সংরক্ষণ করতে সমস্যা হয়েছে: ${e.message}`;
+            } finally {
+                loading = false; // Always set loading to false
+                render(); // Always re-render to clear loading screen and update UI
+            }
+        }
+
+        // --- Navigation ---
+        function navigateTo(page) {
+            currentPage = page;
+            render(); // Render the page structure first
+
+            // Special handling for preview page to populate editable content AFTER DOM is rendered
+            if (page === 'preview') {
+                setTimeout(() => {
+                    const editableBodyDiv = document.getElementById('certificate-body-editable-content');
+                    if (editableBodyDiv) {
+                        const { title, body } = getCertificateTexts(selectedCertificateType, certificateLanguage, formData, false);
+                        document.getElementById('dynamic-certificate-title').innerHTML = title;
+                        // If loading from a saved certificate, use its editableContent, otherwise use default body
+                        const savedCertificate = certificates.find(cert => cert.type === selectedCertificateType && JSON.stringify(cert.data) === JSON.stringify(formData));
+                        editableBodyDiv.innerHTML = savedCertificate?.editableContent || body;
+                        certificateRef.current = editableBodyDiv; // Update ref to point to the editable body
+                    }
+                }, 0); // Use setTimeout to ensure DOM is updated
+            }
+        }
+
+        // --- Main Render Function ---
+        function render() {
+            console.log(`Rendering page: ${currentPage}, App Main Heading: ${appSettings.mainHeading}`);
+            if (loading) {
+                renderLoading();
+                return;
+            }
+            if (error) {
+                renderError();
+                return;
+            }
+
+            switch (currentPage) {
+                case 'home':
+                    renderHomePage();
+                    break;
+                case 'create':
+                    renderCreatePage();
+                    break;
+                case 'view':
+                    renderViewPage();
+                    break;
+                case 'settings':
+                    renderSettingsPage();
+                    break;
+                case 'preview':
+                    renderPreviewPage();
+                    break;
+                default:
+                    renderHomePage();
+            }
+        }
+
+        // --- Firebase Initialization and Data Loading ---
+        async function setupFirebase() {
+            try {
+                if (!firebaseConfig || Object.keys(firebaseConfig).length === 0) {
+                    error = "Firebase কনফিগারেশন অনুপস্থিত বা অবৈধ। অনুগ্রহ করে সেটিংস চেক করুন।";
+                    loading = false;
+                    render();
+                    console.error("Firebase config is missing or invalid:", firebaseConfig);
+                    return;
+                }
+
+                if (!appInstance) {
+                    appInstance = initializeApp(firebaseConfig);
+                    dbInstance = getFirestore(appInstance);
+                    authInstance = getAuth(appInstance);
+                    console.log("Firebase app initialized successfully.");
+                }
+
+                if (authInstance) {
+                    onAuthStateChanged(authInstance, async (user) => {
+                        if (user) {
+                            userId = user.uid;
+                            loading = false;
+                            render(); // Initial render after auth
+                            console.log("Auth state changed. User ID:", userId);
+                            loadAppSettings();
+                            loadCertificates();
+                        } else {
+                            // If no user is authenticated, sign in with custom token or anonymously
+                            if (initialAuthToken) {
+                                await signInWithCustomToken(authInstance, initialAuthToken);
+                                console.log("Signed in with custom token.");
+                            } else {
+                                await signInAnonymously(authInstance);
+                                console.log("Signed in anonymously.");
+                            }
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error("Firebase authentication or initialization error:", e);
+                error = `Firebase প্রমাণীকরণে সমস্যা হয়েছে: ${e.message}`;
+                loading = false;
+                render();
+            }
+        }
+
+        function loadAppSettings() {
+            if (dbInstance && userId) {
+                const settingsDocRef = doc(dbInstance, `artifacts/${appId}/users/${userId}/settings/app_settings`);
+                onSnapshot(settingsDocRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const fetchedSettings = docSnap.data();
+                        appSettings = {
+                            ...appSettings,
+                            ...fetchedSettings,
+                            certificateFieldConfig: fetchedSettings.certificateFieldConfig || defaultFieldConfig,
+                        };
+                        console.log("App settings loaded/updated. Main Heading:", appSettings.mainHeading);
+                    } else {
+                        // If no settings exist, save default settings
+                        setDoc(settingsDocRef, appSettings, { merge: true }).catch(e => console.error("Error saving default settings:", e));
+                    }
+                    render(); // Re-render after settings load
+                }, (err) => {
+                    console.error("Error fetching app settings:", err);
+                    error = "সেটিংস লোড করতে সমস্যা হয়েছে।";
+                    render();
+                });
+            }
+        }
+
+        function loadCertificates() {
+            if (dbInstance && userId) {
+                const certificatesCollectionRef = collection(dbInstance, `artifacts/${appId}/users/${userId}/certificates`);
+                const q = query(certificatesCollectionRef);
+
+                onSnapshot(q, (snapshot) => {
+                    const fetchedCertificates = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    certificates = fetchedCertificates.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    render(); // Re-render after certificates load
+                }, (err) => {
+                    console.error("Error fetching certificates:", err);
+                    error = "প্রত্যয়নপত্র লোড করতে সমস্যা হয়েছে।";
+                    render();
+                });
+            }
+        }
+
+        // --- Initial Setup on Window Load ---
+        window.onload = async () => {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            await setupFirebase();
+
+            // Add navigation event listeners
+            document.getElementById('nav-home').addEventListener('click', () => navigateTo('home'));
+            document.getElementById('nav-create').addEventListener('click', () => navigateTo('create'));
+            document.getElementById('nav-view').addEventListener('click', () => navigateTo('view'));
+            document.getElementById('nav-settings').addEventListener('click', () => navigateTo('settings'));
+
+            // Dynamically load html2canvas and jspdf scripts
+            const loadScript = (src, id) => {
+                if (!document.getElementById(id)) {
+                    const script = document.createElement('script');
+                    script.src = src;
+                    script.id = id;
+                    script.async = true;
+                    document.head.appendChild(script);
+                    console.log(`Script loaded: ${src}`);
+                }
+            };
+            loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', 'html2canvas-script');
+            loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', 'jspdf-script');
+        };
+    </script>
+</body>
+</html>
